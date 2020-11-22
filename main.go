@@ -82,7 +82,7 @@ func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 				} else if color.R == 0 && color.G == 65 && color.B == 255 {
 					value = 20
 				} else if color.R == 250 && color.G == 245 && color.B == 0 {
-					value = 20
+					value = 30
 				} else if color.R == 255 && color.G == 153 && color.B == 0 {
 					value = 50
 				} else if color.R == 255 && color.G == 40 && color.B == 0 {
