@@ -15,8 +15,8 @@ import (
 // GetParams はjmaに投げるパラメーターでもある
 type GetParams struct {
 	Date int `validate:"required,min=202001010000"` // 過去データ参照する気無いので簡易
-	X    int `validate:"required,min=19,max=42"`    // 数値範囲外=日本の観測範囲外
-	Y    int `validate:"required,min=18,max=64"`    // 数値範囲外=日本の観測範囲外
+	X    int `validate:"required,min=19,max=44"`    // 数値範囲外=日本の観測範囲外
+	Y    int `validate:"required,min=18,max=46"`    // 数値範囲外=日本の観測範囲外
 	Z    int `validate:"required,len=6"`            // 1から6まである、XYを6基準で指定してあるので6固定
 }
 
