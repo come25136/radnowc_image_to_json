@@ -23,6 +23,3 @@ Resources:
           Properties:
             Path: /
             Method: GET
-      Environment:
-        Variables:
-          PARAM1: VALUE
