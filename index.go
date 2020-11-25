@@ -2,8 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
-	"fmt"
 	"image/color"
 	"image/png"
 	"net/http"
@@ -105,17 +103,4 @@ func RadnowcHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(res)
-}
-
-func main() {
-	addressPointer := flag.String("address", ":8000", "Listen address")
-	flag.Parse()
-
-	fmt.Printf("Listen %s", *addressPointer)
-
-	http.HandleFunc("/", radnowcHandler)
-	err := http.ListenAndServe(*addressPointer, nil)
-	if err != nil {
-		panic(err)
-	}
 }
