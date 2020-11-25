@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
-	"fmt"
 	"image/color"
 	"image/png"
 	"net/http"
 	"strconv"
 
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -20,13 +20,15 @@ type GetParams struct {
 	Z    int `validate:"required,len=6"`            // 1から6まである、XYを6基準で指定してあるので6固定
 }
 
-func radnowcHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+func radnowcHandler(r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := map[string]string{
+		"Access-Control-Allow-Origin": "*",
+	}
 
-	date, _ := strconv.Atoi(r.FormValue("date"))
-	x, _ := strconv.Atoi(r.FormValue("x"))
-	y, _ := strconv.Atoi(r.FormValue("y"))
-	z, _ := strconv.Atoi(r.FormValue("z"))
+	date, _ := strconv.Atoi(r.QueryStringParameters["date"])
+	x, _ := strconv.Atoi(r.QueryStringParameters["x"])
+	y, _ := strconv.Atoi(r.QueryStringParameters["y"])
+	z, _ := strconv.Atoi(r.QueryStringParameters["z"])
 
 	params := &GetParams{
 		Date: date,
@@ -39,28 +41,39 @@ func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 	err := validate.Struct(params)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return events.APIGatewayProxyResponse{
+			Headers:    headers,
+			StatusCode: http.StatusBadRequest,
+			Body:       err.Error(),
+		}, nil
 	}
 
 	url := "https://www.jma.go.jp/jp/realtimerad/highresorad_tile/HRKSNC/" + strconv.Itoa(date) + "/" + strconv.Itoa(date) + "/zoom" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "_" + strconv.Itoa(y) + ".png"
 
 	radnowcRes, err := http.Get(url)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return events.APIGatewayProxyResponse{
+			Headers:    headers,
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, nil
 	}
 	defer radnowcRes.Body.Close()
 
 	if radnowcRes.StatusCode == http.StatusNotFound {
-		http.NotFound(w, r)
-		return
+		return events.APIGatewayProxyResponse{
+			Headers:    headers,
+			StatusCode: http.StatusNotFound,
+		}, nil
 	}
 
 	img, err := png.Decode(radnowcRes.Body)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return events.APIGatewayProxyResponse{
+			Headers:    headers,
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, nil
 	}
 
 	var radnowcData [256][256]int
@@ -99,23 +112,20 @@ func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 	res, err := json.Marshal(radnowcData[:])
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return events.APIGatewayProxyResponse{
+			Headers:    headers,
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, nil
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	return events.APIGatewayProxyResponse{
+		Headers:    headers,
+		StatusCode: http.StatusOK,
+		Body:       string(res),
+	}, nil
 }
 
 func main() {
-	addressPointer := flag.String("address", ":8000", "Listen address")
-	flag.Parse()
-
-	fmt.Printf("Listen %s", *addressPointer)
-
-	http.HandleFunc("/", radnowcHandler)
-	err := http.ListenAndServe(*addressPointer, nil)
-	if err != nil {
-		panic(err)
-	}
+	lambda.Start(radnowcHandler)
 }

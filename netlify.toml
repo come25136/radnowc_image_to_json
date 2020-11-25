@@ -1,0 +1,4 @@
+
+[build]
+  functions = "functions"
+  command = "make build"
