@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ type GetParams struct {
 	Z    int `validate:"required,len=6"`            // 1から6まである、XYを6基準で指定してあるので6固定
 }
 
-func RadnowcHandler(w http.ResponseWriter, r *http.Request) {
+func main(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	date, _ := strconv.Atoi(r.FormValue("date"))
