@@ -14,25 +14,28 @@ import (
 
 // GetParams はjmaに投げるパラメーターでもある
 type GetParams struct {
-	Date int `validate:"required,min=202001010000"` // 過去データ参照する気無いので簡易
-	X    int `validate:"required,min=19,max=44"`    // 数値範囲外=日本の観測範囲外
-	Y    int `validate:"required,min=18,max=46"`    // 数値範囲外=日本の観測範囲外
-	Z    int `validate:"required,len=6"`            // 1から6まである、XYを6基準で指定してあるので6固定
+	BaseTime int `validate:"required,min=202001010000"` // 過去データ参照する気無いので簡易
+	Time     int `validate:"required,min=202001010000"` // 過去データ参照する気無いので簡易
+	X        int `validate:"required"`                  // 数値範囲外=日本の観測範囲外
+	Y        int `validate:"required"`                  // 数値範囲外=日本の観測範囲外
+	Z        int `validate:"required,len=7"`            // 1から6まである、XYを6基準で指定してあるので6固定
 }
 
 func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	date, _ := strconv.Atoi(r.FormValue("date"))
+	basetime, _ := strconv.Atoi(r.FormValue("basetime"))
+	time, _ := strconv.Atoi(r.FormValue("time"))
 	x, _ := strconv.Atoi(r.FormValue("x"))
 	y, _ := strconv.Atoi(r.FormValue("y"))
 	z, _ := strconv.Atoi(r.FormValue("z"))
 
 	params := &GetParams{
-		Date: date,
-		X:    x,
-		Y:    y,
-		Z:    z,
+		BaseTime: basetime,
+		Time:     time,
+		X:        x,
+		Y:        y,
+		Z:        z,
 	}
 
 	validate := validator.New()
@@ -43,7 +46,8 @@ func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := "https://www.jma.go.jp/jp/realtimerad/highresorad_tile/HRKSNC/" + strconv.Itoa(date) + "/" + strconv.Itoa(date) + "/zoom" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "_" + strconv.Itoa(y) + ".png"
+	url := "https://www.jma.go.jp/bosai/jmatile/data/nowc/" + strconv.Itoa(basetime) + "/none/" + strconv.Itoa(time) + "/surf/hrpns/" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "/" + strconv.Itoa(y) + ".png"
+	fmt.Println(url)
 
 	radnowcRes, err := http.Get(url)
 	if err != nil {
