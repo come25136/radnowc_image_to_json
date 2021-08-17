@@ -47,7 +47,6 @@ func radnowcHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	url := "https://www.jma.go.jp/bosai/jmatile/data/nowc/" + strconv.Itoa(basetime) + "/none/" + strconv.Itoa(time) + "/surf/hrpns/" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "/" + strconv.Itoa(y) + ".png"
-	fmt.Println(url)
 
 	radnowcRes, err := http.Get(url)
 	if err != nil {
