@@ -2,20 +2,22 @@
 [気象庁｜高解像度降水ナウキャスト](https://www.jma.go.jp/jp/realtimerad/index.html)タイル(ラスターデータ)を数値データに変換するサーバーです
 
 # 使い方
-http://localhost:8000/?date=202011200500&x=34&y=31&z=6 的な感じで使います
+http://localhost:8000/?basetime=202011200500&time=202011200500&x=34&y=31&z=6 的な感じで使います
 
 ## 起動引数
 address = :3000
 
 ## パラメーター
-date = YYYYMMDDHHmm (mmは5分単位)
+basetime = YYYYMMDDHHmm (mmは5分単位)
+time = YYYYMMDDHHmm (mmは5分単位)
 x = 19-44 (ナウキャストマップの西から東にかけて数値が大きくなります)
 y = 18-46 (ナウキャストマップの北から南にかけて数値が大きくなります)
 z = 6 (ナウキャストの仕様的には1-6ですが、XYのバリデートの都合上6固定です)
+※[気象庁のここ](https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json)から時刻データを取得
 
 ### 備考
 x,yはchromeなどの開発者ツールを使用して、ナウキャストのタイル番号を調べてください (こういうやつ↓)
-https://www.jma.go.jp/jp/realtimerad/highresorad_tile/HRKSNC/{date}/{date}/zoom{z}/{x}_{y}.png
+https://www.jma.go.jp/bosai/jmatile/data/nowc/{basetime}/none/{time}/surf/hrpns/{z}/{x}/{y}.png
 
 1タイル = 256px x 256px
 
