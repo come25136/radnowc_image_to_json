@@ -8,12 +8,13 @@ http://localhost:8000/?basetime=202011200500&time=202011200500&x=34&y=31&z=6 的
 address = :3000
 
 ## パラメーター
-basetime = YYYYMMDDHHmm (mmは5分単位)
-time = YYYYMMDDHHmm (mmは5分単位)
-x = 19-44 (ナウキャストマップの西から東にかけて数値が大きくなります)
-y = 18-46 (ナウキャストマップの北から南にかけて数値が大きくなります)
-z = 6 (ナウキャストの仕様的には1-6ですが、XYのバリデートの都合上6固定です)
-※時刻データは[気象庁のここ](https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json)
+basetime = YYYYMMDDHHmm (mmは5分単位)  
+time = YYYYMMDDHHmm (mmは5分単位)  
+x = 19-44 (ナウキャストマップの西から東にかけて数値が大きくなります)  
+y = 18-46 (ナウキャストマップの北から南にかけて数値が大きくなります)  
+z = 6 (ナウキャストの仕様的には1-6ですが、XYのバリデートの都合上6固定です)  
+
+※時刻データは[気象庁のここ](https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json)  
 
 ### 備考
 x,yはchromeなどの開発者ツールを使用して、ナウキャストのタイル番号を調べてください。 (こういうやつ↓)
